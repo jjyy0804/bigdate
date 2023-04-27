@@ -2,115 +2,119 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Modal from 'react-modal';
-import axios from 'axios';
 import { useState,useEffect } from 'react';
 import KakaoLogin from 'react-kakao-login';
 import NaverLogin from 'react-naver-login';
-import { Xl, XLg } from 'react-bootstrap-icons';
+import axios from 'axios';
 import './Navbar2.css';
 import '../login/LoginModal.css';
 import { Link, useHistory } from 'react-router-dom';
+import { XLg } from 'react-bootstrap-icons';
 
 Modal.setAppElement('#root');
 
-const Navbar2=() =>{
-  const [userId,setUserId] = useState('');
-  const [password,setPassword] = useState('');
-  const history = useHistory();
-
-  {/**모달 띄우기 상태 */}
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-
-  {/**로그인 상태 */}
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const storedLoginStatus = localStorage.getItem('isLoggedIn');
-    setIsLoggedIn(storedLoginStatus === 'true');
-  }, []);
+const Navbar_ad=() =>{
+    const [userId,setUserId] = useState('');
+    const [password,setPassword] = useState('');
+    const history = useHistory();
   
-  {/**모달이 오픈되었을 때 모달 오픈 상태 true로 셋팅 */}
-  const handleModalOpen = () => {
-    setModalIsOpen(true);
-  };
-
-  {/**모달이 닫혔을 때 모달 오픈 상태 false로 셋팅 */}
-  const handleModalClose = () => {
-    setModalIsOpen(false);
-  };
-
-
-
-  {/**로그아웃 시 */}
-  const handleLogout = () => {
-    console.log(isLoggedIn);
-    localStorage.removeItem("isLoggedIn")
-    setIsLoggedIn(false);
-    // 또는 로컬 스토리지에서 삭제
-    localStorage.removeItem("token");
-    
-    // 로그아웃 후 리다이렉트할 페이지로 이동
-    history.push("/");
-   
-  };
-
+    {/**모달 띄우기 상태 */}
+    const [modalIsOpen, setModalIsOpen] = useState(false);
   
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  
+    {/**로그인 상태 */}
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+    useEffect(() => {
+      const storedLoginStatus = localStorage.getItem('isLoggedIn');
+      setIsLoggedIn(storedLoginStatus === 'true');
+    }, []);
     
-    try {
-      console.log(JSON.stringify({ userId, password }))
-      const response = await axios.post(`http://3.38.34.39:8080/login`, {
-        userId,
-        password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const token = response.data.JWT; // JWT 토큰을 받아옵니다.
-      
-      localStorage.setItem('token', token); // 받아온 토큰을 로컬 스토리지에 저장합니다.
-      localStorage.setItem("userId",userId);
-      handleModalClose();
-      setIsLoggedIn(true);
-      localStorage.setItem("isLoggedIn",'true')
-      
-      
-      console.log(response)
-      if (response.data.userRole=== 'ADMIN') { // 관리자용 페이지로 이동합니다.
-        window.location.pathname = '/admin'}
-      
-    } catch (error) {
-      // 요청이 실패한 경우 처리
-        setUserId('')
-        setPassword('')
-        console.log(error)
-        alert(error.response.data);
-     
-      }
+    {/**모달이 오픈되었을 때 모달 오픈 상태 true로 셋팅 */}
+    const handleModalOpen = () => {
+      setModalIsOpen(true);
     };
   
+    {/**모달이 닫혔을 때 모달 오픈 상태 false로 셋팅 */}
+    const handleModalClose = () => {
+      setModalIsOpen(false);
+    };
+  
+  
+  
+    {/**로그아웃 시 */}
+    const handleLogout = () => {
+      console.log(isLoggedIn);
+      localStorage.removeItem("isLoggedIn")
+      setIsLoggedIn(false);
+      // 또는 로컬 스토리지에서 삭제
+      localStorage.removeItem("token");
+      
+      // 로그아웃 후 리다이렉트할 페이지로 이동
+      window.location.pathname = '/'
+     
+    };
+  
+    
+  
+    const handleLogin = async (event) => {
+      event.preventDefault();
+      
+      try {
+        console.log(JSON.stringify({ userId, password }))
+        const response = await axios.post(`http://3.38.34.39:8080/login`, {
+          userId,
+          password
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const token = response.data.JWT; // JWT 토큰을 받아옵니다.
+        localStorage.setItem('token', token); // 받아온 토큰을 로컬 스토리지에 저장합니다.
+        handleModalClose();
+        setIsLoggedIn(true);
+        localStorage.setItem("isLoggedIn",'true')
+        
+        console.log(response)
+        if (response.data.userRole=== 'ADMIN') { // 관리자용 페이지로 이동합니다.
+         history.push('/admin');}
+        
+      } catch (error) {
+        // 요청이 실패한 경우 처리
+          setUserId('')
+          setPassword('')
+          console.log(error)
+          alert(error.response.data);
+       
+        }
+      };
 
 
+  
+
+
+  
   return (
     <>
     
       <Navbar collapseOnSelect className='navbar'>
         <Container id='content'>
-          <Navbar.Brand href='/' id='logo'>
+          <Navbar.Brand href='/admin' id='logo'>
             그때 그때
           </Navbar.Brand>
           <Navbar.Toggle aria-controls='responsive-navbar-nav' />
           <Navbar.Collapse id='responsive-navbar-nav'>
+            <Nav className='me-auto' style={{marginLeft:'100px'}}>
+              <Nav.Link href='/post'>커뮤니티 관리</Nav.Link>
+            </Nav>
             <Nav className='me-auto'>
-              <Nav.Link href='/post'>커뮤니티</Nav.Link>
+              <Nav.Link href='/user'>회원 관리</Nav.Link>
+            </Nav>
+            <Nav className='me-auto'>
+              <Nav.Link href='/place'>장소 관리</Nav.Link>
             </Nav>
             <Nav>
-              <Nav.Link href='/mypage'>마이페이지</Nav.Link>
-             
               <Nav.Link onClick={() => {
                 handleLogout()
                   if (isLoggedIn) {
@@ -132,8 +136,8 @@ const Navbar2=() =>{
         </Container>
       </Navbar>
 
-      {/*로그인 모달창 */}
-      <Modal isOpen={modalIsOpen} onRequestClose={handleModalClose} 
+        {/*로그인 모달창 */}
+        <Modal isOpen={modalIsOpen} onRequestClose={handleModalClose} 
     style={{
         zIndex:10,
         overlay: {
@@ -150,7 +154,8 @@ const Navbar2=() =>{
        
       }}>
 
-      <div style={{textAlign:'right'}}>
+   
+<div style={{textAlign:'right'}}>
       <button style={{backgroundColor:'white',padding:'0px'}} onClick={handleModalClose}><XLg/></button>
       </div>
 
@@ -193,4 +198,4 @@ const Navbar2=() =>{
   );
 }
 
-export default Navbar2;
+export default Navbar_ad;

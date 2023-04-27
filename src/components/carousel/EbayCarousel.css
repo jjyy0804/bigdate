@@ -1,11 +1,8 @@
 .carousel-slide {
    
     width: fit-content;
-    margin-left: 100px
-   
-  }
-  .carousel-image {
- 
-    max-height: 150px; 
+    display: flex;
+   justify-content: center;
+   text-align: center;
    
   }

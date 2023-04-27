@@ -36,7 +36,8 @@
 }
 
 .radio_container{
-  margin-left: 3px;
+  margin-top: 10px;
+  margin-left: 570px;
   display: flex;
   gap:10px;
   font-size: 11px;

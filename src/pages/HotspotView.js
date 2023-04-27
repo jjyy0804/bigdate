@@ -12,25 +12,18 @@ import EbayCarousel from '../components/carousel/EbayCarousel';
 
 
   // 장소 목록 데이터를 가지고 있는 places 배열을 정의
-  const places = [
-    { id: 1, name: '장소1', image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzAzMTFfNjkg%2FMDAxNjc4NTM1NTE3NTEy.QobP1bSQAdM4wFZUQFLxpacrsqq8qf8JqqUbvRWBSAAg.SpPSqIqB53mA1yz_lbHrbT2N8KysYQzKuyyYM1ECQTEg.JPEG.m31004%2FIMG_2517.JPG&type=a340' },
-    { id: 2, name: '장소2', image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjA0MTdfODQg%2FMDAxNjUwMTQ4MzY0NDkz.JpLJOeViPJ9hzfT5PKGZq90otIkcoiashiN73TsF5L0g.V7S969MXYChO7Blwr5zfaT8biJVtb8aQ5GvMo0GDu8Qg.JPEG.ejin07%2F1650148364713.jpg&type=a340' },
-    { id: 3, name: '장소3', image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzAyMDVfMjYz%2FMDAxNjc1NTgzOTU3MDU0.NnDboOwdi4CmCrfTRh6GEil7LLebRBskAPWvqXn2uJ8g.Y2afKCCjdQ2dRsDDoW15OE83jdfOnyyx7jIGq4xWUfEg.JPEG.qerten%2F20230205%25A3%25DF135426.jpg&type=a340' },
-    { id: 4, name: '장소4', image: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzAyMDVfMjYz%2FMDAxNjc1NTgzOTU3MDU0.NnDboOwdi4CmCrfTRh6GEil7LLebRBskAPWvqXn2uJ8g.Y2afKCCjdQ2dRsDDoW15OE83jdfOnyyx7jIGq4xWUfEg.JPEG.qerten%2F20230205%25A3%25DF135426.jpg&type=a340' },
-    // 추가적인 장소 데이터
-  ];
+  const places = [];
 
 function HotspotView() {
- const { hotspot_id } = useParams();
+
  const [ data, setData ] = useState({});
 
  const location = useLocation();
- const { hotspot_name } = location.state;
+ const { hotspotName,hotspotId} = location.state;
 
+ 
 
- useEffect(() => {
-   setData(getPostByNo(hotspot_id));
- }, [ ]);
+ const [placeList, setPlaceList] = useState([]);
 
 
  const [areaName, setAreaName] = useState('');
@@ -53,8 +46,11 @@ function HotspotView() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
+        //지역상세정보불러오기
+      
         const response = await axios.get(
-          `http://openapi.seoul.go.kr:8088/55526953736a6a793633725870596b/xml/citydata/1/5/${hotspot_name}`
+          `http://openapi.seoul.go.kr:8088/55526953736a6a793633725870596b/xml/citydata/1/5/${hotspotName}`
         );
 
         // XML 데이터를 JSON 형식으로 변환
@@ -93,10 +89,23 @@ function HotspotView() {
           setTraffic_mag(traffic_msg);
           setTraffic_level(traffic_level);
           setTraffic_speed(traffic_speed);
+      
+        });
+          //장소목록불러오기
+          const place_list =await axios.get(`http://3.38.34.39:8080/hotspots/${hotspotId}`);
+         
+          console.log(place_list.data);
           
+          setPlaceList(place_list.data);
+
+
+          
+
+
+          //로드완료시
           setIsLoading(false);
          
-        });
+        
       } catch (error) {
         console.error(error);
       }
@@ -106,19 +115,57 @@ function HotspotView() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div style={{display:'flex',justifyContent:'center',marginTop:'200px'}}><h3>Loading...</h3></div>;
   }
  
+  // 카테고리 코드가 음식점인 데이터만 추출
+  const filterRE = placeList.filter(function(place) {
+    return place.categoryGroupCode === 'RE';
+  });
+  // 카테고리 코드가 카페인 데이터만 추출
+  const filterCA = placeList.filter(function(place) {
+    return place.categoryGroupCode === 'CA';
+  });
+  // 카테고리 코드가 놀거리인 데이터만 추출
+  const filterAT = placeList.filter(function(place) {
+    return place.categoryGroupCode === 'AT';
+  });
+
+  // 카테고리 '힙한'인 데이터만 추출
+  const filterHIP = placeList.filter(function(place) {
+    return place.placeMood === '힙한';
+  });
+
+   // 카테고리 '로맨틱한'인 데이터만 추출
+   const filterROMANTIC = placeList.filter(function(place) {
+    return place.placeMood === '로맨틱한';
+  });
+
+   // 카테고리 '힐링'인 데이터만 추출
+   const filterHEALING = placeList.filter(function(place) {
+    return place.placeMood === '힐링';
+  });
+
+    // 카테고리 '레트로'인 데이터만 추출
+    const filterRETRO = placeList.filter(function(place) {
+      return place.placeMood === '레트로';
+    });
+
+    // 카테고리 '활동적인'인 데이터만 추출
+    const filterACTIVE = placeList.filter(function(place) {
+      return place.placeMood === '활동적인';
+    });
+
 
 
 
   return (
 <div>
   <div className='hotspot_container'>
-         <div className='hotspot_title'>{hotspot_name}의 실시간 정보</div>
+         <div className='hotspot_title'>{hotspotName}의 실시간 정보</div>
   </div>      
          <div className='row-1'> 
-            <img src={`https://data.seoul.go.kr/SeoulRtd/images/hotspot/${hotspot_name}.jpg`} width="25%"/>
+            <img src={`https://data.seoul.go.kr/SeoulRtd/images/hotspot/${hotspotName}.jpg`} width="25%"/>
             <div style={{display: 'flex', flexDirection: 'column'}}>
                 <div className='row-1_content'>실시간 혼잡도는<span style={{fontWeight:"bold"}}> {congest} </span>입니다.</div>
                 <div>날씨/환경</div>
@@ -153,21 +200,21 @@ function HotspotView() {
          <div >
           <div className='tag'> # 음식점</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterRE} />
           </div>
          </div>
 
          <div >
           <div className='tag'> # 카페</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterCA} />
           </div>
          </div>
 
          <div >
           <div className='tag'> # 놀거리</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterAT} />
           </div>
          </div>
 
@@ -175,35 +222,35 @@ function HotspotView() {
          <div >
           <div className='tag'> # 로맨틱</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterROMANTIC} />
           </div>
          </div>
 
          <div >
           <div className='tag'> # 활동적인</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterACTIVE} />
           </div>
          </div>
 
          <div >
           <div className='tag'> # 힐링</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterHEALING} />
           </div>
          </div>
 
          <div >
           <div className='tag'> # 힙한</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterHIP} />
           </div>
          </div>
 
          <div >
           <div className='tag'> # 레트로</div>
           <div style={{backgroundColor:'white',width:'1000px', marginLeft:'10%',marginTop:'10px',marginBottom:'30px',borderRadius:'20px'}}>
-          <EbayCarousel places={places} />
+          <EbayCarousel places={filterRETRO} />
           </div>
          </div>
          

@@ -30,6 +30,11 @@ const CommonTable = props => {
   const history = useHistory();
 
   const handleButtonClick = () => {
+    //로그인 안 한 사용자일 경우 글쓰기 x
+    if (!localStorage.getItem('token')) {
+      alert('로그인이 필요한 서비스입니다.');
+      return;
+    }
     // 버튼 클릭 시 페이지 이동
     history.push('/user/course/write');
   };
