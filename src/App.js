@@ -14,7 +14,7 @@ import Mypage from './pages/mypage/Mypage';
 import MyPostList from './pages/mypage/MyPostList';
 import MyScrapList from './pages/mypage/MyScrapList';
 import PlaceView from './pages/PlaceView';
-import NaverLogin from './components/login/NaverLogin';
+
 import Signup from './pages/Signup';
 import Home_ad from './pages/admin/Home_ad';
 import Navbar_ad from './components/navigation/Navbar_ad';
@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/hotspots/:hotspot_id" component={HotspotView}/>
         <Route path="/user/course/write" component={RegisterPost}/>
         <Route path="/place/:id" component={PlaceView}/>
-        <Route path="/c" component={NaverLogin}/>
+
         <Route path="/signup" component={Signup}/>
       </>
     </BrowserRouter>

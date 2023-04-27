@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './PostView.css';
 import { getPostByNo } from '../post/PostList';
-import { CircleFill, GeoAltFill, GeoFill, HandThumbsUp,Heart, StarFill, } from 'react-bootstrap-icons';
+import { CircleFill, GeoAltFill, GeoFill, HandThumbsUp,Heart, StarFill, PersonCircle} from 'react-bootstrap-icons';
 const { kakao } = window;
 
 const places = [
@@ -10,6 +12,7 @@ const places = [
 ];
 const PostView = ({ history, location, match }) => {
   const [ data, setData ] = useState({});
+  const [comment,setComment] = useState('');
 
   const { course_id } = match.params;
 
@@ -57,6 +60,30 @@ const PostView = ({ history, location, match }) => {
     displayMarker(place);
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault(); // 이벤트의 기본 동작을 방지합니다.
+    postComment(comment); // state의 값을 인자로 전달합니다.
+    setComment(''); // 댓글 등록 후 state를 초기화합니다.
+  };
+
+  //댓글 등록 함수
+  const postComment = async (comment) => {
+    setComment(comment);
+    try {
+      console.log(comment)
+      const token = localStorage.getItem('token');
+      const response = await axios.post('/users/comments', { comment }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
   return (
     <>
      
@@ -67,14 +94,7 @@ const PostView = ({ history, location, match }) => {
             <>
             <div className='background-container'>
             <div className="overlay-container">
-            <div style={{
-              fontWeight:"bold",
-              fontSize:"large",
-              marginRight:"40px",
-              marginLeft:"40px",
-              paddingTop:'40px',
-              borderBottom: '1px solid gray'
-              }}>{data.course_name}</div>
+            <div className='line'>{data.course_name}</div>
 
 
         <div style={{ display: 'flex' }}>
@@ -114,27 +134,13 @@ const PostView = ({ history, location, match }) => {
          </div>
               
 
-         <div style={{
-              fontWeight:"bold",
-              fontSize:"large",
-              marginRight:"40px",
-              marginLeft:"40px",
-              paddingTop:'40px',
-              borderBottom: '1px solid gray'
-              }}>코스 설명
+         <div className='line'>코스 설명
         </div>
         <div style={{marginLeft:'40px',fontSize:'12px'}}>course_info</div>
 
 
 
-        <div style={{
-              fontWeight:"bold",
-              fontSize:"large",
-              marginRight:"40px",
-              marginLeft:"40px",
-              paddingTop:'40px',
-              borderBottom: '1px solid gray'
-              }}>코스 상세보기
+        <div className='line'>코스 상세보기
         </div>
        {/**map함수로 코스에 해당하는 장소 넣기 */}
        <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -171,24 +177,44 @@ const PostView = ({ history, location, match }) => {
         </div>
 
 
-        <div style={{
-              fontWeight:"bold",
-              fontSize:"large",
-              marginRight:"40px",
-              marginLeft:"40px",
-              paddingTop:'40px',
-              borderBottom: '1px solid gray'
-              }}>댓글
+        <div className='line'>댓글
         </div>
-        <div style={{marginLeft:'40px',fontSize:'12px'}}>댓글리스트</div>
-        <div><textarea placeholder='댓글을 입력하세요' style={{marginLeft:'80px',width:'600px'}}></textarea></div>
+        <div style={{marginLeft:'40px',fontSize:'12px'}}>
+         
+          
+          댓글리스트
+          
+        </div>
+
+
+
+        <form onSubmit={handleSubmit}>
+          <div style={{marginLeft:'130px'}}>사용자 id</div>
+            <div className='toCenter'>
+              <div style={{width: '50px', height: '50px' }} className='toCenter'>
+                <PersonCircle style={{ fontSize: '40px',color:'dimgray' }} />
+              </div>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)} // state를 업데이트합니다.
+                placeholder='댓글을 입력하세요'
+                style={{ marginLeft: '10px', width: '600px' }}
+              />
+            </div>
+            <div>
+              <button type="submit" className='postComment'>
+                등록
+              </button>
+            </div>
+          </form>
         
               </div>
               </div>
             </>
+            
           ) : '해당 게시글을 찾을 수 없습니다.'
         }
-        <button className="post-view-go-list-btn" onClick={() => history.goBack()}>목록으로 돌아가기</button>
+       
       </div>
     </>
   )
