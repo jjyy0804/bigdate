@@ -127,11 +127,11 @@ const date = moment(data.postedDate).format('YYYY-MM-DD');
       if(response.data=='좋아요 목록에서 삭제되었습니다.'){
         setLikeCount(likeCount-1);
         setIsLiked(false);
-        localStorage.setItem('IsLiked',isLiked)
+        
        }else{
         setLikeCount(likeCount+1);
         setIsLiked(true);
-        localStorage.setItem('IsLiked',isLiked)
+       
       }
       
     } catch (error) {

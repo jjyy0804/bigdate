@@ -7,7 +7,7 @@ import { ADDRESS } from '../Adress';
 import './PlaceView.css';
 import { HandThumbsUp,HeartFill,PersonCircle } from 'react-bootstrap-icons';
 import { useHistory } from 'react-router-dom';
-
+import moment from 'moment';
 
 const { kakao } = window
 
@@ -92,8 +92,10 @@ const PlaceView = (props) => {
     },
     // 이하 리뷰 데이터가 추가될 수 있습니다.
   ]
-  
+
+ //const totalExpense = place.courseList.reviewList.reduce((acc, review) => acc + review.expense, 0);
  
+
    // 로딩이 완료되면 데이터를 화면에 렌더링
    return (
     <div className="background-container">
@@ -171,20 +173,20 @@ const PlaceView = (props) => {
 
         <div style={{flexDirection: 'column'}} className='toCenter'>
           {place.courseList&&place.courseList.map((course, index) => (
-            <div key={index} className='courseBox' style={{padding:'10px'}}  onClick={() => handleClick(course)}>
+            <div key={index} className='courseBox' style={{padding:'10px'}}  onClick={() => handleClick(course.courseId)}>
               <div style={{display:'flex',justifyContent:'space-between'}}>
-              <div style={{fontSize:'20px'}}>{course}</div>
-              <div>아이디</div>
+              <div style={{fontSize:'20px'}}>{course.courseTitle}</div>
+              <div>{course.userId}</div>
               </div>
               <div style={{marginfTop:'15px',color:'gray'}}>
-                총 지출 비용  원
+                총 지출 비용   원
               </div>
               <div  style={{display:'flex',justifyContent:'space-between'}}>
                 <div style={{display:'flex', marginTop:'10px'}}>
-                <div style={{marginLeft:'5px'}}><HandThumbsUp/></div>
-                <div style={{marginLeft:'20px'}}><HeartFill style={{color:'red'}}/></div>
+                <div style={{marginLeft:'5px'}}><HandThumbsUp/>{course.likeCount}</div>
+                <div style={{marginLeft:'20px'}}><HeartFill style={{color:'red'}}/>{course.scrapCount}</div>
                 </div>
-                <div style={{ marginTop:'10px'}}>날짜</div>
+                <div style={{ marginTop:'10px'}}>{moment(course.postedDate).format('YYYY-MM-DD')}</div>
               </div>
             </div>
           ))}
@@ -195,29 +197,29 @@ const PlaceView = (props) => {
 
 
         <div className='line'>리뷰</div>
-          {reviews && reviews.map((review) => (
+          {place.reviewList && place.reviewList.map((review) => (
             <div className='toCenter'>
               <div>
                 <div style={{display:'flex',marginLeft:'80px',marginTop:'10px'}}>
-                  <div>날짜</div>
+                  <div>{moment(review.postedDate).format('YYYY-MM-DD')}</div>
                   <div style={{marginLeft:'10px'}}> 
-                    {Array(review.rating).fill(<StarFill style={{color:'gold'}}/>)}
-                    {Array(5 - review.rating).fill(<Star style={{color:'lightgray'}}/>)}
+                    {Array(review.avgScore).fill(<StarFill style={{color:'gold'}}/>)}
+                    {Array(5 - review.avgScore).fill(<Star style={{color:'lightgray'}}/>)}
                   </div>
                 </div>
 
                 <div style={{display:'flex'}}>
                   <div>
                     <div><PersonCircle style={{fontSize:'50px',color:'dimgray'}}/></div>
-                    <div style={{textAlign:'center'}}>{review.user.name}</div>
+                    <div style={{textAlign:'center'}}>{review.userId}</div>
                   </div>
                   <div className='reviewBox'>
-                    {review.reviewText}
+                    {review.reviewInfo}
                   </div>
                 </div>
 
                 <div style={{float:'right'}}>
-                  {review.totalCost}
+                  {review.expense}
                 </div>
               </div>
             </div>
