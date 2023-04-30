@@ -4,6 +4,7 @@ import { PlusSquare,DashSquare, ConeStriped} from 'react-bootstrap-icons';
 import PlaceForm from '../components/form/PlaceForm';
 import axios from 'axios';
 import { ADDRESS } from '../Adress';
+import { useHistory } from 'react-router-dom';
 
 
 function RegistPost() {
@@ -15,6 +16,7 @@ function RegistPost() {
   const [numComponents, setNumComponents] = useState(0);
   const [components,setComponents] = useState([]);
   const [placeforms,setPlaceforms] = useState([]);
+  const history=useHistory();
 
 
   const [totalData, setTotalData] = useState({
@@ -97,6 +99,7 @@ function RegistPost() {
         },
       );
       console.log(response.data);
+      history.push('/post');
     } catch (error) {
       console.error(error);
     }

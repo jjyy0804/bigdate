@@ -48,6 +48,8 @@ const Navbar2=() =>{
     setIsLoggedIn(false);
     // 또는 로컬 스토리지에서 삭제
     localStorage.removeItem("token");
+    localStorage.removeItem('id');
+    localStorage.removeItem('userId');
     
     // 로그아웃 후 리다이렉트할 페이지로 이동
     history.push("/");

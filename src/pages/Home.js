@@ -104,11 +104,17 @@ function Home() {
                 <Card.Body>
                  
                  <Card.Title style={{ fontWeight: 'bold' ,fontSize:'14px'}}>{topFiveCongest.hotspotName}
-                 <span>
-                      {topFiveCongest.congestionLevel === 4 ? '혼잡' :
-                        topFiveCongest.congestionLevel === 3 ? '약간 붐빔' :
-                          topFiveCongest.congestionLevel === 2 ? '보통' :
-                            topFiveCongest.congestionLevel === 1 ? '여유' : ''}
+                 <span style={{
+                  color:topFiveCongest.congestionLevel === 2 ? 'black' :'white',
+                  backgroundColor: topFiveCongest.congestionLevel === 4 ? 'red' :
+                    topFiveCongest.congestionLevel === 3 ? 'orange' :
+                      topFiveCongest.congestionLevel === 2 ? 'yellow' :
+                        topFiveCongest.congestionLevel === 1 ? 'green' : 'white'
+                }}>
+                  {topFiveCongest.congestionLevel === 4 ? '혼잡' :
+                    topFiveCongest.congestionLevel === 3 ? '약간 붐빔' :
+                      topFiveCongest.congestionLevel === 2 ? '보통' :
+                        topFiveCongest.congestionLevel === 1 ? '여유' : ''}
                 </span>
                 </Card.Title>
    
@@ -132,12 +138,18 @@ function Home() {
                   <Card.Body>
                    
                    <Card.Title style={{ fontWeight: 'bold' ,fontSize:'14px'}}>{lowFiveCongest.hotspotName}
-                   <span>
-                        {lowFiveCongest.congestionLevel === 4 ? '혼잡' :
-                          lowFiveCongest.congestionLevel === 3 ? '약간 붐빔' :
-                            lowFiveCongest.congestionLevel === 2 ? '보통' :
-                              lowFiveCongest.congestionLevel === 1 ? '여유' : ''}
-                  </span>
+                   <span style={{
+                      color:lowFiveCongest.congestionLevel === 2 ? 'black' :'white',
+                      backgroundColor: lowFiveCongest.congestionLevel === 4 ? 'red' :
+                        lowFiveCongest.congestionLevel === 3 ? 'orange' :
+                        lowFiveCongest.congestionLevel === 2 ? 'yellow' :
+                            lowFiveCongest.congestionLevel === 1 ? 'green' : 'white'
+                    }}>
+                      {lowFiveCongest.congestionLevel === 4 ? '혼잡' :
+                        lowFiveCongest.congestionLevel === 3 ? '약간 붐빔' :
+                          lowFiveCongest.congestionLevel === 2 ? '보통' :
+                            lowFiveCongest.congestionLevel === 1 ? '여유' : ''}
+                    </span>
                   </Card.Title>
      
                   </Card.Body>

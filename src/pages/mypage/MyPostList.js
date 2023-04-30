@@ -47,8 +47,8 @@ function MyPostList() {
      
     
       //서버에 코스 목록 조회 요청하기
-      useEffect(() => {
-        const id=localStorage.getItem('id');
+      const fetchDataList = () => {
+        const id = localStorage.getItem('id');
         axios.get(`${ADDRESS}/users/${id}/courses`)
           .then(response => {
             console.log(response.data);
@@ -57,21 +57,29 @@ function MyPostList() {
           .catch(error => {
             console.log(error);
           });
+      };
+
+      useEffect(() => {
+        fetchDataList();
       }, [pageNumber]);
 
 
-      const handleDelete = async (courseId) => {
-        const token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+     const handleDelete = async (courseId) => {
+      const token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            
+      try {
+        const response = await axios.delete(`${ADDRESS}/users/courses/${courseId}`);
+        console.log(response);
         
-        try {
-          const response = await axios.delete(`${ADDRESS}/user/courses/${courseId}`);
-          console.log(response);
-          // 코스 삭제 후 필요한 UI 업데이트 로직
-        } catch (error) {
-          console.error(error);
-        }
-      };
+        // 목록을 다시 불러오기 위해 1초 대기 후에 실행
+        setTimeout(() => {
+          fetchDataList();
+        }, 1000);
+      } catch (error) {
+        console.error(error);
+      }
+    };
   
       return (
         <div>
@@ -129,7 +137,7 @@ function MyPostList() {
                       <CommonTableColumn>{moment(item.postedDate).format('YYYY-MM-DD')}</CommonTableColumn>
                       <div style={{display:'flex'}}>
                       <div><button className='reBtn'>수정</button></div>
-                      <div ><button className='delBtn' onClick={handleDelete} style={{marginLeft:'5px'}}>삭제</button></div>        
+                      <div ><button className='delBtn' onClick={() => handleDelete(item.courseId)} style={{marginLeft:'5px'}}>삭제</button></div>        
                       </div>        
                     </CommonTableRow>
                   )

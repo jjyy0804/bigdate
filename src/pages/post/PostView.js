@@ -94,15 +94,20 @@ const date = moment(data.postedDate).format('YYYY-MM-DD');
   //댓글 등록 함수
   const postComment = async (comment) => {
     setComment(comment);
+    const id = localStorage.getItem('id');
+
     try {
       console.log(comment)
       const token = localStorage.getItem('token');
-      const response = await axios.post('/users/comments', { comment }, {
+      const response = await axios.post(`${ADDRESS}/users/comments`, { commentText:comment,courseId:parseInt(course_id),id:parseInt(id) }, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
+      alert('댓글이 등록되었습니다.')
+      window.location.reload(false);
+   
       return response.data;
     } catch (error) {
       console.error(error);
@@ -138,7 +143,7 @@ const date = moment(data.postedDate).format('YYYY-MM-DD');
     
     const token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    setScrapCount(scrapCount-1)
+   
     try {
       const response = await axios.post(`${ADDRESS}/users/scraps?courseId=${course_id}`,
       );
@@ -276,8 +281,8 @@ const date = moment(data.postedDate).format('YYYY-MM-DD');
           return (
             <div key={id}>
               <div style={{display:'flex'}}>
-                <div style={{marginLeft:'130px'}}>{userId}</div>
-                <div style={{marginLeft:'20px'}}>{createdAt}</div>
+                <div style={{marginLeft:'130px'}}>{comment.id}</div>
+                <div style={{marginLeft:'20px'}}>{moment(comment.postedDate).format('YYYY-MM-DD')}</div>
               </div>            
 
               <div className='toCenter'>
@@ -285,7 +290,7 @@ const date = moment(data.postedDate).format('YYYY-MM-DD');
                   <PersonCircle style={{ fontSize: '40px',color:'dimgray' }} />
                 </div>
                 <div style={{ marginLeft: '10px', width: '600px',borderBottom:'1px solid gray',marginTop:'20px',paddingBottom:'25px' }}>
-                  {content}
+                  {comment.commentText}
                 </div>
               </div>
             </div>
@@ -302,7 +307,7 @@ const date = moment(data.postedDate).format('YYYY-MM-DD');
 
         <form onSubmit={handleSubmit}>
           <div>
-          <div style={{marginLeft:'130px',marginTop:'20px'}}>사용자 id</div>
+          <div style={{marginLeft:'130px',marginTop:'20px'}}>{localStorage.getItem('userId')}</div>
           </div>
 
           
