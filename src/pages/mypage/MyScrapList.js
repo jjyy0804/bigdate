@@ -1,21 +1,61 @@
 import React, { useEffect, useState } from 'react'
 import ListGroup from 'react-bootstrap/ListGroup';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import CommonTable from '../../components/table/CommonTable';
 import CommonTableColumn from '../../components/table/CommonTableColumn';
 import CommonTableRow from '../../components/table/CommonTableRow';
-import { HandThumbsUp,Heart, } from 'react-bootstrap-icons';
-import { postList } from '../../Data';
+import { HandThumbsUp,Heart, HeartFill, } from 'react-bootstrap-icons';
+import axios from 'axios';
+import Pagination from 'react-bootstrap/Pagination';
 import './Mypage.css'
 import MyScrapTable from '../../components/table/MyScrapTable';
+import { ADDRESS } from '../../Adress';
+import moment from 'moment';
 
 function MyPostList() {
+    const history=useHistory();
     const [ dataList, setDataList ] = useState([]);
+    const [pageNumber, setPageNumber] = useState(0); 
+    const token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
   
-  
-    useEffect(() => {
-      setDataList(postList);
-    }, [ ])
+    let items = [];
+    const totalPages = 10; // 예시로 총 10 페이지가 있다고 가정합니다.
+    const startPage = Math.max(1, pageNumber - 2);
+    const endPage = Math.min(totalPages, pageNumber + 1);
+    for (let number = startPage; number <= endPage; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          active={number === pageNumber + 1}
+          onClick={() => setPageNumber(number - 1)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+      
+  const paginationBasic = (
+    <div>
+      <Pagination size="sm">{items}</Pagination>
+    </div>
+  );
+
+ 
+
+  //서버에 코스 목록 조회 요청하기
+  useEffect(() => {
+    axios.get(`${ADDRESS}/users/scraps`)
+      .then(response => {
+        console.log(response.data);
+        setDataList(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, [pageNumber]);
+
   return (
     <div>
     <div style={{display:'flex'}}>
@@ -54,22 +94,23 @@ function MyPostList() {
               return (
               
                 <CommonTableRow key={index}>
-                  <CommonTableColumn>{ item.course_id }</CommonTableColumn>
+                  <CommonTableColumn>{ item.courseId }</CommonTableColumn>
                   <CommonTableColumn>
-                    <Link to={`/postView/${item.course_id}`}>{ item.course_name }</Link>
+                      <span onClick={() => history.push(`/postView/${item.courseId}`)}>
+                        {item.courseTitle}
+                      </span>
                   </CommonTableColumn>
-                  <CommonTableColumn>{ item.user_id }</CommonTableColumn>
-                  <CommonTableColumn><HandThumbsUp style={{ marginRight: "5px" }} />{ item.LikeCount}</CommonTableColumn>
-                  <CommonTableColumn> <Heart style={{ marginRight: "5px" }} />{ item.ScrapCount}</CommonTableColumn>
-                  <CommonTableColumn>{ item.posted_date}</CommonTableColumn>
-                  <CommonTableColumn><button  style={{
-                                        color:"red",
-                                        backgroundColor:'white',
-                                        border:'solid',
-                                        borderColor:'red',
-                                        borderRadius:'10px',
-                                        borderWidth:'0.5px'
-                                    }}>삭제</button></CommonTableColumn>
+                  <CommonTableColumn>{ item.userId}</CommonTableColumn>
+                  <CommonTableColumn>
+                          <HandThumbsUp style={{color:'#1E90FF',marginRight: '5px'}} />
+                            {item.likeCount}
+                          </CommonTableColumn>
+                          <CommonTableColumn>
+                          <HeartFill style={{color: 'red' , marginRight: '5px'}} /> 
+                            {item.scrapCount}
+                          </CommonTableColumn>
+                  <CommonTableColumn>{moment(item.postedDate).format('YYYY-MM-DD')}</CommonTableColumn>
+                  <div><button className='delBtn'>삭제</button></div>
                 </CommonTableRow>
               )
             }) : ''
@@ -79,7 +120,7 @@ function MyPostList() {
     </div>
     
 
-  </div>    
+  </div>    {paginationBasic}
     </div>
     </div>
 

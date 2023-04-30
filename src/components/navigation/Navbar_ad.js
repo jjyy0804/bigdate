@@ -3,13 +3,12 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Modal from 'react-modal';
 import { useState,useEffect } from 'react';
-import KakaoLogin from 'react-kakao-login';
-import NaverLogin from 'react-naver-login';
 import axios from 'axios';
 import './Navbar2.css';
 import '../login/LoginModal.css';
 import { Link, useHistory } from 'react-router-dom';
 import { XLg } from 'react-bootstrap-icons';
+import { ADDRESS } from '../../Adress';
 
 Modal.setAppElement('#root');
 
@@ -62,7 +61,7 @@ const Navbar_ad=() =>{
       
       try {
         console.log(JSON.stringify({ userId, password }))
-        const response = await axios.post(`http://3.38.34.39:8080/login`, {
+        const response = await axios.post(`${ADDRESS}/login`, {
           userId,
           password
         }, {

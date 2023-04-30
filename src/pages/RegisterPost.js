@@ -3,6 +3,8 @@ import "./RegisterPost.css";
 import { PlusSquare,DashSquare, ConeStriped} from 'react-bootstrap-icons';
 import PlaceForm from '../components/form/PlaceForm';
 import axios from 'axios';
+import { ADDRESS } from '../Adress';
+
 
 function RegistPost() {
   const [inputVal, setInputVal] = useState(''); // 입력창의 값을 상태로 관리
@@ -85,7 +87,7 @@ function RegistPost() {
     console.log(data);
     try {
       const response = await axios.post(
-        'http://3.38.34.39:8080/users/courses',
+        `${ADDRESS}/users/courses`,
         data,
         {
           headers: {

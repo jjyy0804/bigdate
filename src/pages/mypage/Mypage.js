@@ -7,18 +7,22 @@ import { PersonCircle } from 'react-bootstrap-icons';
 import './Mypage.css'
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { ADDRESS } from '../../Adress';
+
 
 
 
 
 function Mypage() {
+  
+
   const token = localStorage.getItem('token');
   useEffect(() => {
    
   
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   
-    axios.get('http://3.38.34.39:8080/users/')
+    axios.get(`${ADDRESS}/users/`)
       .then(response => {
         // 서버로부터 받은 데이터 처리
         console.log(response.data);
@@ -36,6 +40,7 @@ function Mypage() {
   if (!token) {
     // 토큰이 없는 경우 로그인 페이지로 이동
     alert('로그인이 필요한 서비스 입니다.')
+
     return null;
   }
 

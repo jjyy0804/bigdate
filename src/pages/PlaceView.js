@@ -1,20 +1,26 @@
 import React, { useState, useEffect,useRef } from 'react';
 import axios from 'axios';
-import { GeoAltFill, StarFill} from 'react-bootstrap-icons';
+import { GeoAltFill, Star, StarFill} from 'react-bootstrap-icons';
 import { KakaoMap, MapMarker } from 'react-kakao-maps';
-import { Link } from 'react-router-dom';
+
+import { ADDRESS } from '../Adress';
+import './PlaceView.css';
+import { HandThumbsUp,HeartFill,PersonCircle } from 'react-bootstrap-icons';
+import { useHistory } from 'react-router-dom';
+
 
 const { kakao } = window
 
 
 
 const PlaceView = (props) => {
+  const history = useHistory();
   const placeId = props.match.params.id;
-  const courses = ['코스1', '코스2', '코스3'];
+
   const[place,setPlace]=useState('');
 
   useEffect(() => {
-    axios.get(`http://3.38.34.39:8080/places/${placeId}`)
+    axios.get(`${ADDRESS}/places/${placeId}`)
     .then(response => {
       console.log(response);
       const place =setPlace(response.data);
@@ -51,6 +57,41 @@ const PlaceView = (props) => {
     });
   }, [placeId]);
   
+
+ 
+ //해당 코스 상세 뷰로 이동
+  const handleClick = (courseid) => {
+    // 이동할 페이지의 URL을 설정합니다.
+    const url = `/postView/${courseid}`;
+
+    // 페이지 이동을 수행합니다.
+    window.location.href=url;
+  };
+
+
+  const reviews = [
+    {
+      date: "2023-04-28",
+      rating: 4,
+      user: {
+        name: "Alice",
+        profilePic: "https://example.com/profile_pic_alice.jpg"
+      },
+      reviewText: "좋은 장소입니다.",
+      totalCost: 100000
+    },
+    {
+      date: "2023-04-27",
+      rating: 3,
+      user: {
+        name: "Bob",
+        profilePic: "https://example.com/profile_pic_bob.jpg"
+      },
+      reviewText: "보통입니다.",
+      totalCost: 50000
+    },
+    // 이하 리뷰 데이터가 추가될 수 있습니다.
+  ]
   
  
    // 로딩이 완료되면 데이터를 화면에 렌더링
@@ -59,13 +100,7 @@ const PlaceView = (props) => {
       
       <div className="overlay-container">
 
-      <div style={{
-        fontWeight:"bold",
-        fontSize:"large",
-        marginRight:"40px",
-        marginLeft:"40px",
-        borderBottom: '1px solid gray'
-        }}>{place.placeName} <StarFill style={{color:'orange',marginBottom:'5px'}}/>(별점)
+      <div className='line'>{place.placeName} <StarFill style={{color:'orange',marginBottom:'5px'}}/>({place.score})
 
         </div>
         <div className='tag' style={{margin:'20px 20px'}}> # {place.placeMood}</div>
@@ -74,7 +109,7 @@ const PlaceView = (props) => {
             <img src={place.imageUrl} 
             style={{
              width:'300px',
-             height:'300px'
+             height:'300px',
             }}/></div>
           <div>
             <div style=
@@ -127,44 +162,67 @@ const PlaceView = (props) => {
        </div>
       </div>
 
-        <div style={{
-        fontWeight:"bold",
-        fontSize:"large",
-        marginRight:"40px",
-        marginLeft:"40px",
-        borderBottom: '1px solid gray'
-        }}>장소명을 포함한 추천 코스 
 
-        </div>
-        <div style={{display:'flex',justifyContent:'center',alignItems:'center',flexDirection: 'column'}}>
-          {courses.map((course, index) => (
-            <div key={index} style={{borderColor:'gray',borderStyle:'solid',borderWidth:'1px',borderRadius:'5px',width:'700px',height:'100px',marginTop:'20px'}}>
-              {course}
+
+
+
+
+        <div className='line'>"{place.placeName}" 을 포함한 추천 코스 </div>
+
+        <div style={{flexDirection: 'column'}} className='toCenter'>
+          {place.courseList&&place.courseList.map((course, index) => (
+            <div key={index} className='courseBox' style={{padding:'10px'}}  onClick={() => handleClick(course)}>
+              <div style={{display:'flex',justifyContent:'space-between'}}>
+              <div style={{fontSize:'20px'}}>{course}</div>
+              <div>아이디</div>
+              </div>
+              <div style={{marginfTop:'15px',color:'gray'}}>
+                총 지출 비용  원
+              </div>
+              <div  style={{display:'flex',justifyContent:'space-between'}}>
+                <div style={{display:'flex', marginTop:'10px'}}>
+                <div style={{marginLeft:'5px'}}><HandThumbsUp/></div>
+                <div style={{marginLeft:'20px'}}><HeartFill style={{color:'red'}}/></div>
+                </div>
+                <div style={{ marginTop:'10px'}}>날짜</div>
+              </div>
             </div>
           ))}
         </div>
 
-        <div style={{
-        fontWeight:"bold",
-        fontSize:"large",
-        margin:'10px 40px',
-        borderBottom: '1px solid gray'
-        }}>리뷰
 
-        </div>
-        <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-          <div style=
-          {{borderColor:'gray',
-            borderStyle:'solid',
-            borderWidth:'1px',
-            borderRadius:'20px',
-            width:'700px',
-            height:'100px',
-            marginTop:'20px'}}>
-            코스1 map함수 써서
-            
-          </div>
-        </div>
+
+
+
+        <div className='line'>리뷰</div>
+          {reviews && reviews.map((review) => (
+            <div className='toCenter'>
+              <div>
+                <div style={{display:'flex',marginLeft:'80px',marginTop:'10px'}}>
+                  <div>날짜</div>
+                  <div style={{marginLeft:'10px'}}> 
+                    {Array(review.rating).fill(<StarFill style={{color:'gold'}}/>)}
+                    {Array(5 - review.rating).fill(<Star style={{color:'lightgray'}}/>)}
+                  </div>
+                </div>
+
+                <div style={{display:'flex'}}>
+                  <div>
+                    <div><PersonCircle style={{fontSize:'50px',color:'dimgray'}}/></div>
+                    <div style={{textAlign:'center'}}>{review.user.name}</div>
+                  </div>
+                  <div className='reviewBox'>
+                    {review.reviewText}
+                  </div>
+                </div>
+
+                <div style={{float:'right'}}>
+                  {review.totalCost}
+                </div>
+              </div>
+            </div>
+          ))}
+
 
         
      

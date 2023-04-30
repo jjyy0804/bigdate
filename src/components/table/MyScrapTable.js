@@ -58,9 +58,7 @@ const MyScrapTable = props => {
       </tbody>   
     </table>
 
-    <div className='pagination'>
-       {paginationBasic}
-    </div>
+   
 
     </div>
   )

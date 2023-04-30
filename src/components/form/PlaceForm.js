@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import RegistPost from '../../pages/RegisterPost';
 import './PlaceForm.css'
 import axios from 'axios';
+import { ADDRESS } from '../../Adress';
+
 
 // PlaceForm 컴포넌트 정의
 const PlaceForm = (props) => {
@@ -37,7 +39,7 @@ const PlaceForm = (props) => {
     const token = localStorage.getItem('token');
   
     try {
-      const response = await axios.get(`http://3.38.34.39:8080/users/places`, { // 서버로 GET 요청을 보냄
+      const response = await axios.get(`${ADDRESS}/users/places`, { // 서버로 GET 요청을 보냄
         params: { searchData: value }, // 쿼리스트링으로 검색어를 전달
         headers: { Authorization: `Bearer ${token}` },
       });

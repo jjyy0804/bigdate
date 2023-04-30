@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom";
+import { ADDRESS } from "../../Adress";
+
 
 import Graph from "../../components/graph/Graph";
 import Table from "../../components/table/admin/Table";
@@ -21,7 +23,7 @@ function Home_ad() {
           history.push("/");
         }
       
-        axios.get('http://3.38.34.39:8080/admin/')
+        axios.get(`${ADDRESS}/admin/`)
           .then(response => {
             // 서버로부터 받은 데이터 처리
             console.log(response.data);
@@ -40,7 +42,7 @@ function Home_ad() {
     return (
         <div className="container" style={{width:'300px',height:'100px'}}>
             <div className="row">
-            <Table />
+            <h3>관리자용 페이지</h3>
             </div>
                     
         </div>

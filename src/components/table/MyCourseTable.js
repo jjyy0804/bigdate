@@ -29,10 +29,7 @@ const MycourseTable = props => {
 
   const history = useHistory();
 
-  const handleButtonClick = () => {
-    // 버튼 클릭 시 페이지 이동
-    history.push('/user/course/write');
-  };
+
 
 
   return (
@@ -57,10 +54,6 @@ const MycourseTable = props => {
         }
       </tbody>   
     </table>
-
-    <div className='pagination'>
-       {paginationBasic}
-    </div>
 
     </div>
   )

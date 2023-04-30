@@ -4,12 +4,11 @@ import Navbar from 'react-bootstrap/Navbar';
 import Modal from 'react-modal';
 import axios from 'axios';
 import { useState,useEffect } from 'react';
-import KakaoLogin from 'react-kakao-login';
-import NaverLogin from 'react-naver-login';
 import { Xl, XLg } from 'react-bootstrap-icons';
 import './Navbar2.css';
 import '../login/LoginModal.css';
 import { Link, useHistory } from 'react-router-dom';
+import { ADDRESS } from '../../Adress';
 
 Modal.setAppElement('#root');
 
@@ -52,6 +51,7 @@ const Navbar2=() =>{
     
     // 로그아웃 후 리다이렉트할 페이지로 이동
     history.push("/");
+    alert('로그아웃 되셨습니다')
    
   };
 
@@ -62,7 +62,7 @@ const Navbar2=() =>{
     
     try {
       console.log(JSON.stringify({ userId, password }))
-      const response = await axios.post(`http://3.38.34.39:8080/login`, {
+      const response = await axios.post(`${ADDRESS}/login`, {
         userId,
         password
       }, {
@@ -71,13 +71,15 @@ const Navbar2=() =>{
         }
       });
       const token = response.data.JWT; // JWT 토큰을 받아옵니다.
-      
+      const id = response.data.Id;
+      console.log(response);
       localStorage.setItem('token', token); // 받아온 토큰을 로컬 스토리지에 저장합니다.
       localStorage.setItem("userId",userId);
+      localStorage.setItem("id",id);
       handleModalClose();
       setIsLoggedIn(true);
       localStorage.setItem("isLoggedIn",'true')
-      
+      alert('로그인 되셨습니다.')
       
       console.log(response)
       if (response.data.userRole=== 'ADMIN') { // 관리자용 페이지로 이동합니다.
@@ -88,7 +90,7 @@ const Navbar2=() =>{
         setUserId('')
         setPassword('')
         console.log(error)
-        alert(error.response.data);
+        alert('로그인 정보를 확인해주세요');
      
       }
     };
@@ -112,15 +114,16 @@ const Navbar2=() =>{
               <Nav.Link href='/mypage'>마이페이지</Nav.Link>
              
               <Nav.Link onClick={() => {
-                handleLogout()
+               
                   if (isLoggedIn) {
                     handleModalClose();
                   } else {
                     handleModalOpen();
                   }
+                  
                 }}>
                    {isLoggedIn ? (
-                    <button>로그아웃</button>
+                    <button onClick={handleLogout}>로그아웃</button>
                   ) : (
                     <button>로그인</button>
                   )}

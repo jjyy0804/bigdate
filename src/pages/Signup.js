@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { Display } from 'react-bootstrap-icons';
 import { useHistory } from 'react-router-dom';
+import { ADDRESS } from '../Adress';
+
 import './Signup.css';
 
 function Signup() {
@@ -17,16 +19,22 @@ function Signup() {
       event.preventDefault();
       try {
         console.log(JSON.stringify({ userId }))
-        const response = await axios.post(`http://3.38.34.39:8080/overlapcheck`, {
-          userId,
+        const response = await axios.get(`${ADDRESS}/id`, {
+          params: { userId: userId }
          
         }, {
           headers: {
             'Content-Type': 'application/json'
           }
         });
+        if(response.data==true){
+          alert('사용 하실 수 있는 아이디입니다.')
+        }else{
+          alert('이미 가입된 아이디입니다.')
+          setUserId('')
+        }
         console.log(response.data);
-        alert(response.data);
+      
       } catch (error) {
         console.error(error);
       }
@@ -39,12 +47,14 @@ function Signup() {
     event.preventDefault();
     try {
       console.log(JSON.stringify({ userId, password,userName ,userMood }))
-      const response = await axios.post(`http://3.38.34.39:8080/join`, {
+      const response = await axios.post(`${ADDRESS}/join`, {
         userId,
         password,
         userName,
-        userMood
-      }, {
+        userMood,
+ 
+      }, 
+      {
         headers: {
           'Content-Type': 'application/json'
         }

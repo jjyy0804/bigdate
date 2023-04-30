@@ -9,6 +9,7 @@ import { ThermometerHalf ,Sun,Cloudy,Wind} from 'react-bootstrap-icons';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import EbayCarousel from '../components/carousel/EbayCarousel';
+import { ADDRESS } from '../Adress';
 
 
   // 장소 목록 데이터를 가지고 있는 places 배열을 정의
@@ -92,7 +93,7 @@ function HotspotView() {
       
         });
           //장소목록불러오기
-          const place_list =await axios.get(`http://3.38.34.39:8080/hotspots/${hotspotId}`);
+          const place_list =await axios.get(`${ADDRESS}/hotspots/${hotspotId}`);
          
           console.log(place_list.data);
           

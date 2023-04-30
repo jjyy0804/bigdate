@@ -4,13 +4,14 @@ import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 import {hotspots} from '../HotspotData';
 import axios from 'axios';
+import { ADDRESS } from '../Adress';
 
 
 
 /** 
 axios(
   {
-    url: 'http://3.38.34.39:8080/places',
+    url: `${process.env.LOCALHOST_ADDRESS}/places`,
     method: 'get'
   }
 ).then(function (response) {
@@ -22,6 +23,7 @@ axios(
  
 
 function Home() {
+ 
 
   const [topFiveCongest, setTopFiveCongest] = useState([]);
   const [lowFiveCongest, setLowFiveCongest] = useState([]);
@@ -30,7 +32,7 @@ function Home() {
   const [lowFiveTraffic, setLowFiveTraffic] = useState([]);
   
   useEffect(() => {
-    axios.get(`http://3.38.34.39:8080/hotspots`)
+    axios.get(`${ADDRESS}/hotspots`)
       .then(response => {
         // 서버로부터 받은 데이터 처리
         console.log(response.data);
