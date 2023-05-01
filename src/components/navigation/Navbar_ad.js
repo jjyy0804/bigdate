@@ -108,7 +108,7 @@ const Navbar_ad=() =>{
               <Nav.Link href='/post'>커뮤니티 관리</Nav.Link>
             </Nav>
             <Nav className='me-auto'>
-              <Nav.Link href='/user'>회원 관리</Nav.Link>
+              <Nav.Link href='/users'>회원 관리</Nav.Link>
             </Nav>
             <Nav className='me-auto'>
               <Nav.Link href='/place'>장소 관리</Nav.Link>

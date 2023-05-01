@@ -18,16 +18,19 @@ import PlaceView from './pages/PlaceView';
 import Signup from './pages/Signup';
 import Home_ad from './pages/admin/Home_ad';
 import Navbar_ad from './components/navigation/Navbar_ad';
+import UserList from './pages/admin/UserList';
 
 
 
 
 
 const App = () => {
-  const [isAdminPage, setIsAdminPage] = useState(window.location.pathname.startsWith('/admin'));
+
+
+  const [isAdminPage, setIsAdminPage] = useState(window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/users'));
 
   useEffect(() => {
-    const handleLocationChange = () => setIsAdminPage(window.location.pathname.startsWith('/admin'));
+    const handleLocationChange = () => setIsAdminPage(window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/users'));
     window.addEventListener('popstate', handleLocationChange);
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
@@ -37,7 +40,6 @@ const App = () => {
       {isAdminPage ? <Navbar_ad /> : <Navbar2 />}
       <>
         <Route path="/" exact={true} component={Home}/>
-        <Route path="/admin" component={Home_ad}/>
         <Route path="/mypage" component={Mypage} />
         <Route path="/courses" component={MyPostList} />
         <Route path="/scraps" component={MyScrapList} />
@@ -46,8 +48,9 @@ const App = () => {
         <Route path="/hotspots/:hotspot_id" component={HotspotView}/>
         <Route path="/user/course/write" component={RegisterPost}/>
         <Route path="/place/:id" component={PlaceView}/>
-
         <Route path="/signup" component={Signup}/>
+        <Route path="/admin" component={Home_ad}/>
+        <Route path="/users" component={UserList}/>
       </>
     </BrowserRouter>
   );
