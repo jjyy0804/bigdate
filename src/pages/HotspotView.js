@@ -3,7 +3,6 @@ import { useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import xml2js from 'xml2js';
 import { useState } from 'react';
-import { getPostByNo } from '../HotspotData';
 import './HotspotView.css';
 import { ThermometerHalf ,Sun,Cloudy,Wind} from 'react-bootstrap-icons';
 
