@@ -19,6 +19,8 @@ import Signup from './pages/Signup';
 import Home_ad from './pages/admin/Home_ad';
 import Navbar_ad from './components/navigation/Navbar_ad';
 import UserList from './pages/admin/UserList';
+import PostMain_ad from './pages/admin/post/PostMain_ad';
+import PostView_ad from './pages/admin/post/PostView_ad';
 
 
 
@@ -27,10 +29,10 @@ import UserList from './pages/admin/UserList';
 const App = () => {
 
 
-  const [isAdminPage, setIsAdminPage] = useState(window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/users'));
+  const [isAdminPage, setIsAdminPage] = useState(window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/users')|| window.location.pathname.startsWith('/posts')|| window.location.pathname.startsWith('/postViewAd'));
 
   useEffect(() => {
-    const handleLocationChange = () => setIsAdminPage(window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/users'));
+    const handleLocationChange = () => setIsAdminPage(window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/users')|| window.location.pathname.startsWith('/posts')|| window.location.pathname.startsWith('/postViewAd'));
     window.addEventListener('popstate', handleLocationChange);
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
@@ -51,6 +53,9 @@ const App = () => {
         <Route path="/signup" component={Signup}/>
         <Route path="/admin" component={Home_ad}/>
         <Route path="/users" component={UserList}/>
+        <Route path="/posts" component={PostMain_ad}/>
+        <Route path="/postViewAd/:course_id" component={PostView_ad}/>
+
       </>
     </BrowserRouter>
   );
